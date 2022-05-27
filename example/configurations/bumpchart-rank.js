@@ -1,5 +1,5 @@
 import chart from 'rawcharts/bumpchart'
-import data from '../datasets/Music-ranking.tsv'
+import data from '../datasets/music-ranking.tsv'
 
 export default {
   chart: chart,
