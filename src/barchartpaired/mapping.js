@@ -1,4 +1,5 @@
 export const mapData = {
-  x: 'get',
+  x1: 'get',
+  x2: 'get',
   y: 'get'
 }
