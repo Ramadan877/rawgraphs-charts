@@ -4,7 +4,7 @@ export const metadata = {
   // thumbnail,
   // icon,
   categories: ['Test', 'Debugging'],
-  description: 'An empty chart to bootstrap new ones',
+  description: 'A chart for observing the impact of two categories over a dependency function',
   // code: 'https://github.com/rawgraphs',
   // tutorial: 'https://rawgraphs.io/learning/',
 }

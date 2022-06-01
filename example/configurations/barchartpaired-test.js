@@ -16,14 +16,15 @@ export default {
         Genre: 'string',
     },
     mapping: {
-        x: { value: ['Budget (Millions, adjusted for inflation)'] },
-        y: { value: ['Box Office (Millions, adjusted for inflation)'] },
+        x1: { value: ['Budget (Millions, adjusted for inflation)'] },
+        x2: { value: ['Box Office (Millions, adjusted for inflation)'] },
+        y: { value: ['Rating'] },
         // color: { value: ['Genre'] },
     },
     visualOptions: {
         width: 800,
         height: 600,
-        background: 'salmon',
-        dotsRadius: 10,
+        background: 'white',
+        title: "COOL PAIRED BAR CHART"
     },
 }
