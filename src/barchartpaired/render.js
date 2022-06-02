@@ -12,13 +12,19 @@ export function render(node, data, visualOptions, mapping, styles) {
     marginLeft,
     marginRight,
     title,
-    background
+    background,
+    spaceCommonAxis,
+    sortBarsBy,
+    padding,
+    labelLeftAlignment,
+    labelLeftRotation
   } = visualOptions
 
   const minTitleHeight = 300
   const titleSize = height / 30
 
   let boundWidth = width - marginLeft - marginRight
+  let boundWidthOneChart = boundWidth - spaceCommonAxis
   let boundHeight = height - marginTop - marginBottom
   let boundLeft = marginLeft
   let boundTop =  boundHeight >= minTitleHeight ? marginTop + titleSize : marginTop
@@ -28,8 +34,32 @@ export function render(node, data, visualOptions, mapping, styles) {
   }
 
   const x1Accessor = d => d.x1
-   const x2Accessor = d => d.x2
+  const x2Accessor = d => d.x2
   const yAccessor = d => d.y
+
+  const barsSortings = {
+    totalDescending: function (a, b) {
+      return d3.descending(a[1], b[1])
+    },
+    totalAscending: function (a, b) {
+      return d3.ascending(a[1], b[1])
+    },
+    name: function (a, b) {
+      return d3.ascending(a[0], b[0])
+    },
+    original: function (a, b) {
+      return true
+    },
+  }
+
+  const barsDomain = d3
+      .rollups(
+          data,
+          (v) => d3.sum(v, (d) => d.size),
+          (d) => d.y
+      )
+      .sort(barsSortings[sortBarsBy])
+      .map((d) => d[0])
 
 
   const svg = d3.select(node)
@@ -49,51 +79,90 @@ export function render(node, data, visualOptions, mapping, styles) {
   }
 
   const bounds = svg.append("g")
-      .style("transform", `translate(
-      ${boundLeft}px,
-      ${boundTop}px)`)
+      .attr("transform", `translate(
+      ${boundLeft},
+      ${boundTop})`)
 
 
   let x1Scale = d3
       .scaleLinear()
       .domain(d3.extent(data, x1Accessor))
-      .range([0, boundWidth / 2])
+      .range([0, (boundWidth - spaceCommonAxis) / 2])
       .nice()
 
   let x2Scale = d3
       .scaleLinear()
       .domain(d3.extent(data, x2Accessor))
-      .range([boundWidth, boundWidth / 2])
+      .range([0, (boundWidth - spaceCommonAxis) / 2])
+      .nice()
+
+  let x2ScaleReverse = d3
+      .scaleLinear()
+      .domain(d3.extent(data, x2Accessor))
+      .range([boundWidth, (boundWidth + spaceCommonAxis) / 2])
       .nice()
 
   let yScale = d3
-      .scaleLinear()
-      .domain(d3.extent(data, yAccessor))
+      .scaleBand()
+      .domain(barsDomain)
       .range([0, boundHeight])
-      .nice()
-
+      .padding(padding / (boundHeight / barsDomain.length))
 
   const yAxisGenerator = d3.axisLeft()
       .scale(yScale)
   const yAxis = bounds.append("g")
       .call(yAxisGenerator)
-      .style("transform", `translateX(${
-          boundWidth / 2
-      }px)`)
+      .attr("text-anchor", "middle")
+  yAxis.attr("transform", `translate(${
+      (boundWidth + yAxis._groups[0][0].getBBox().width) / 2 
+  }, 0)`)
+
+  yAxis.select("path")
+      .attr("stroke", "none")
+  yAxis.selectAll("line")
+      .attr("stroke", "none")
 
   const x1AxisGenerator = d3.axisBottom()
       .scale(x1Scale)
   const x1Axis = bounds.append("g")
       .call(x1AxisGenerator)
-      .style("transform",
-          `translate(${boundWidth / 2}px, ${boundHeight}px)`)
+      .attr("transform",
+          `translate(${(boundWidth + spaceCommonAxis)  / 2}, ${boundHeight})`)
 
   const x2AxisGenerator = d3.axisBottom()
-      .scale(x2Scale)
+      .scale(x2ScaleReverse)
   const x2Axis = bounds.append("g")
       .call(x2AxisGenerator)
-      .style("transform",
-          `translate(${-boundWidth / 2}px, ${boundHeight}px)`)
+      .attr("transform",
+          `translate(${-(boundWidth + spaceCommonAxis) / 2}, ${boundHeight})`)
 
+  x2Axis.selectAll("text")
+      .attr("text-anchor", labelLeftAlignment)
+      .attr("transform", `rotate(${labelLeftRotation})`)
+
+
+  const bars1 = bounds
+      .append('g')
+      .attr('id', 'bars1')
+      .selectAll('rect')
+      .data(data)
+      .join('rect')
+      .attr('x', (boundWidth + spaceCommonAxis)  / 2)
+      .attr('y', (d) => yScale(yAccessor(d)))
+      .attr('height', yScale.bandwidth())
+      .attr('width', (d) => x1Scale(x1Accessor(d)))
+      .attr('fill', "#111111")
+
+  const bars2 = bounds
+      .append('g')
+      .attr('id', 'bars2')
+      .selectAll('rect')
+      .data(data)
+      .join('rect')
+      .attr('x', d => (boundWidth - spaceCommonAxis)  / 2  - x2Scale(x2Accessor(d)))
+      .attr('y', (d) => yScale(yAccessor(d)))
+      .attr('height', yScale.bandwidth())
+      .attr('width', (d) => x2Scale(x2Accessor(d)))
+      .attr('fill', "#111111")
 
 }
