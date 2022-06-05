@@ -1,4 +1,5 @@
 export const visualOptions = {
+    //label
     title : {
         type: "string",
         label: "Chart title",
@@ -25,6 +26,26 @@ export const visualOptions = {
         default: 'middle',
     },
 
+    labelRightRotation : {
+        type: "number",
+        label: "Left label rotation",
+        default: 0,
+        group: "label"
+    },
+
+    labelRightAlignment : {
+        type: "text",
+        label: 'Sort bars by',
+        group: 'label',
+        options: [
+            { label: 'Left', value: 'start' },
+            { label: 'Middle', value: 'middle' },
+            { label: 'Right', value: 'end' },
+        ],
+        default: 'middle',
+    },
+
+    //artboard
     marginTop: {
         type: 'number',
         label: 'Margin (top)',
@@ -53,6 +74,7 @@ export const visualOptions = {
         group: 'artboard',
     },
 
+    //chart
     spaceCommonAxis: {
         type: 'number',
         label: 'Space for common axis',
@@ -80,14 +102,14 @@ export const visualOptions = {
         default: 'name',
     },
 
-    colorScale: {
-        type: 'colorScale',
-        label: 'Color scale',
-        dimension: 'color',
-        default: {
-            scaleType: 'ordinal',
-            interpolator: 'interpolateSpectral',
-        },
-        group: 'color',
-    },
+    // colorScale: { TODO
+    //     type: 'colorScale',
+    //     label: 'Color scale',
+    //     dimension: 'color',
+    //     default: {
+    //         scaleType: 'ordinal',
+    //         interpolator: 'interpolateSpectral',
+    //     },
+    //     group: 'color',
+    // },
 }
