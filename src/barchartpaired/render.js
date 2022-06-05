@@ -38,18 +38,10 @@ export function render(node, data, visualOptions, mapping, styles) {
   const yAccessor = d => d.y
 
   const barsSortings = {
-    totalDescending: function (a, b) {
-      return d3.descending(a[1], b[1])
-    },
-    totalAscending: function (a, b) {
-      return d3.ascending(a[1], b[1])
-    },
-    name: function (a, b) {
-      return d3.ascending(a[0], b[0])
-    },
-    original: function (a, b) {
-      return true
-    },
+    totalDescending: (a, b) => d3.descending(a[1], b[1]),
+    totalAscending: (a, b) => d3.ascending(a[1], b[1]),
+    name: (a, b) => d3.ascending(a[0], b[0]),
+    original: (a, b) => true,
   }
 
   const barsDomain = d3
@@ -87,13 +79,13 @@ export function render(node, data, visualOptions, mapping, styles) {
   let x1Scale = d3
       .scaleLinear()
       .domain(d3.extent(data, x1Accessor))
-      .range([0, (boundWidth - spaceCommonAxis) / 2])
+      .range([0, (boundWidthOneChart) / 2])
       .nice()
 
   let x2Scale = d3
       .scaleLinear()
       .domain(d3.extent(data, x2Accessor))
-      .range([0, (boundWidth - spaceCommonAxis) / 2])
+      .range([0, boundWidthOneChart / 2])
       .nice()
 
   let x2ScaleReverse = d3
@@ -151,7 +143,8 @@ export function render(node, data, visualOptions, mapping, styles) {
       .attr('y', (d) => yScale(yAccessor(d)))
       .attr('height', yScale.bandwidth())
       .attr('width', (d) => x1Scale(x1Accessor(d)))
-      .attr('fill', "#111111")
+      .attr('fill', "#3333ff")
+      // .attr('fill', (d) => colorScale(d.x1))
 
   const bars2 = bounds
       .append('g')
@@ -159,10 +152,11 @@ export function render(node, data, visualOptions, mapping, styles) {
       .selectAll('rect')
       .data(data)
       .join('rect')
-      .attr('x', d => (boundWidth - spaceCommonAxis)  / 2  - x2Scale(x2Accessor(d)))
+      .attr('x', d => boundWidthOneChart / 2  - x2Scale(x2Accessor(d)))
       .attr('y', (d) => yScale(yAccessor(d)))
       .attr('height', yScale.bandwidth())
       .attr('width', (d) => x2Scale(x2Accessor(d)))
-      .attr('fill', "#111111")
+      .attr('fill', "#ff5555")
+      // .attr('fill', (d) => colorScale(d.x2))
 
 }
