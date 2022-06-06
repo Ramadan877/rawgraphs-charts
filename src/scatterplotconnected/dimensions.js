@@ -31,12 +31,6 @@ export const dimensions = [
     required: true,
   },
   {
-    id: 'order',
-    name: 'Order',
-    validTypes: ['number'],
-    required: false
-  },
-  {
     id: 'color',
     name: 'Color',
     validTypes: ['number', 'date', 'string'],

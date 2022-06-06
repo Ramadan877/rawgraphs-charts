@@ -1,10 +1,10 @@
 export const visualOptions = {
 
     title : {
-        type: "string",
+        type: "text",
         label: "Chart title",
         default: "",
-        group: "label"
+        group: "artboard"
     },
 
     marginTop: {
