@@ -17,7 +17,9 @@ export function render(node, data, visualOptions, mapping, styles) {
     sortBarsBy,
     padding,
     labelLeftAlignment,
-    labelLeftRotation
+    labelLeftRotation,
+    colorScale1,
+    colorScale2
   } = visualOptions
 
   const minTitleHeight = 300
@@ -143,8 +145,8 @@ export function render(node, data, visualOptions, mapping, styles) {
       .attr('y', (d) => yScale(yAccessor(d)))
       .attr('height', yScale.bandwidth())
       .attr('width', (d) => x1Scale(x1Accessor(d)))
-      .attr('fill', "#3333ff")
-      // .attr('fill', (d) => colorScale(d.x1))
+      //.attr('fill', "#3333ff")
+      .attr('fill', (d) => colorScale1(d.x1))
 
   const bars2 = bounds
       .append('g')
@@ -156,7 +158,7 @@ export function render(node, data, visualOptions, mapping, styles) {
       .attr('y', (d) => yScale(yAccessor(d)))
       .attr('height', yScale.bandwidth())
       .attr('width', (d) => x2Scale(x2Accessor(d)))
-      .attr('fill', "#ff5555")
-      // .attr('fill', (d) => colorScale(d.x2))
+      //.attr('fill', "#ff5555")
+      .attr('fill', (d) => colorScale2(d.x2))
 
 }

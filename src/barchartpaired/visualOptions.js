@@ -1,7 +1,7 @@
 export const visualOptions = {
     //label
     title : {
-        type: "string",
+        type: "text",
         label: "Chart title",
         default: "",
         group: "label"
@@ -16,7 +16,7 @@ export const visualOptions = {
 
     labelLeftAlignment : {
         type: "text",
-        label: 'Sort bars by',
+        label: 'Align left labels to:',
         group: 'label',
         options: [
             { label: 'Left', value: 'start' },
@@ -28,14 +28,14 @@ export const visualOptions = {
 
     labelRightRotation : {
         type: "number",
-        label: "Left label rotation",
+        label: "Right label rotation",
         default: 0,
         group: "label"
     },
 
     labelRightAlignment : {
         type: "text",
-        label: 'Sort bars by',
+        label: 'Align right labels to:',
         group: 'label',
         options: [
             { label: 'Left', value: 'start' },
@@ -102,14 +102,25 @@ export const visualOptions = {
         default: 'name',
     },
 
-    // colorScale: { TODO
-    //     type: 'colorScale',
-    //     label: 'Color scale',
-    //     dimension: 'color',
-    //     default: {
-    //         scaleType: 'ordinal',
-    //         interpolator: 'interpolateSpectral',
-    //     },
-    //     group: 'color',
-    // },
+    colorScale1: {
+        type: 'colorScale',
+        label: 'Color left axis',
+        dimension: 'x1',
+        default: {
+            scaleType: 'ordinal',
+            interpolator: 'interpolateSpectral',
+        },
+        group: 'color',
+    },
+
+    colorScale2: {
+        type: 'colorScale',
+        label: 'Color right axis',
+        dimension: 'x2',
+        default: {
+            scaleType: 'ordinal',
+            interpolator: 'interpolateSpectral',
+        },
+        group: 'color',
+    },
 }
