@@ -107,8 +107,8 @@ export const visualOptions = {
         label: 'Color left axis',
         dimension: 'x1',
         default: {
-            scaleType: 'ordinal',
-            interpolator: 'interpolateSpectral',
+            scaleType: 'sequential',
+            interpolator: 'interpolateReds',
         },
         group: 'color',
     },
@@ -118,8 +118,8 @@ export const visualOptions = {
         label: 'Color right axis',
         dimension: 'x2',
         default: {
-            scaleType: 'ordinal',
-            interpolator: 'interpolateSpectral',
+            scaleType: 'sequential',
+            interpolator: 'interpolateBlues',
         },
         group: 'color',
     },
