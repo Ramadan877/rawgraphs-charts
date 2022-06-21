@@ -4,19 +4,32 @@ import '../d3-styles.js'
 export function render(node, data, visualOptions, mapping, styles) {
   // destructurate visual visualOptions
   const {
+    //artboard
+    title,
+    background,
     width,
     height,
     marginTop,
     marginBottom,
     marginLeft,
     marginRight,
-    title,
-    background,
+
+    //axis
+    axisLeftLabel,
+    axisLeftLabelVisible,
+    axisRightLabel,
+    axisRightLabelVisible,
+    axisVerticalLabel,
+    axisVerticalLabelVisible,
+    labelLeftAlignment,
+    labelLeftRotation,
+    labelRightAlignment,
+    labelRightRotation,
+
+    //chart
     spaceCommonAxis,
     sortBarsBy,
     padding,
-    labelLeftAlignment,
-    labelLeftRotation,
     colorScale1,
     colorScale2
   } = visualOptions
@@ -38,9 +51,9 @@ export function render(node, data, visualOptions, mapping, styles) {
 
   const svg = d3.select(node)
   const bounds = createBounds()
-  const {x1Scale, x2Scale, x2ScaleReverse, yScale} = createScales()
+  const {x1Scale, x2Scale, x1ScaleReverse, yScale} = createScales()
   const {x1Axis, x2Axis, yAxis} = createAxes()
-  const {labelX1, labelX2} = createLabels()
+  const {labelX1, labelX2} = createAxisLabels()
   const {bars1, bars2} = createBars()
 
   function calcProps() {
@@ -109,16 +122,16 @@ export function render(node, data, visualOptions, mapping, styles) {
         .range([0, (boundWidthOneChart) / 2])
         .nice()
 
+    const x1ScaleReverse = d3
+        .scaleLinear()
+        .domain(d3.extent(data, x1Accessor))
+        .range([boundWidth, (boundWidth + spaceCommonAxis) / 2])
+        .nice()
+
     const x2Scale = d3
         .scaleLinear()
         .domain(d3.extent(data, x2Accessor))
         .range([0, boundWidthOneChart / 2])
-        .nice()
-
-    const x2ScaleReverse = d3
-        .scaleLinear()
-        .domain(d3.extent(data, x2Accessor))
-        .range([boundWidth, (boundWidth + spaceCommonAxis) / 2])
         .nice()
 
     const yScale = d3
@@ -127,7 +140,7 @@ export function render(node, data, visualOptions, mapping, styles) {
         .range([0, boundHeight])
         .padding(padding / (boundHeight / barsDomain.length))
 
-    return {x1Scale, x2Scale, x2ScaleReverse, yScale}
+    return {x1Scale, x2Scale, x1ScaleReverse, yScale}
   }
 
   function createAxes() {
@@ -143,60 +156,75 @@ export function render(node, data, visualOptions, mapping, styles) {
         .remove()//.attr("stroke", "none")
 
     const x1AxisGenerator = d3.axisBottom()
-        .scale(x1Scale)
+        .scale(x1ScaleReverse)
     const x1Axis = bounds.append("g")
         .call(x1AxisGenerator)
         .attr("transform",
-            `translate(${(boundWidth + spaceCommonAxis)  / 2}, ${boundHeight})`)
+            `translate(${-(boundWidth + spaceCommonAxis) / 2}, ${boundHeight})`)
+
+    x1Axis.selectAll("text")
+        .attr("text-anchor", labelLeftAlignment)
+        .attr("transform", `rotate(${labelLeftRotation})`)
 
     const x2AxisGenerator = d3.axisBottom()
-        .scale(x2ScaleReverse)
+        .scale(x2Scale)
     const x2Axis = bounds.append("g")
         .call(x2AxisGenerator)
         .attr("transform",
-            `translate(${-(boundWidth + spaceCommonAxis) / 2}, ${boundHeight})`)
+            `translate(${(boundWidth + spaceCommonAxis)  / 2}, ${boundHeight})`)
+
 
     x2Axis.selectAll("text")
-        .attr("text-anchor", labelLeftAlignment)
-        .attr("transform", `rotate(${labelLeftRotation})`)
+        .attr("text-anchor", labelRightAlignment)
+        .attr("transform", `rotate(${labelRightRotation})`)
 
     return({x1Axis, x2Axis, yAxis})
   }
 
-  function createLabels() {
-    const {x: x1, width: widthX1} = x1Axis._groups[0][0].getBBox()
-    const labelX1 = x1Axis
-        .append('text')
-        .attr('font-family', 'sans-serif')
-        .attr('font-size', 10)
-        .attr('class', 'labels')
-        .text(mapping.x1.value)
-        .attr("fill", "currentColor")
-        .attr("dx", x1 + widthX1)
-    labelX1
-        .attr("transform", `translate(${-labelX1._groups[0][0].getBBox().width / 2}, ${-5})`)
+  function createAxisLabels() {
+    let labelX1 = null
+    let labelX2 = null
+    let labelY = null
+    if (axisLeftLabelVisible) {
+      const {x: x1} = x1Axis._groups[0][0].getBBox()
+      labelX1 = x1Axis
+          .append('text')
+          .attr('font-family', 'sans-serif')
+          .attr('font-size', 10)
+          .attr('class', 'labels')
+          .text(axisLeftLabel ? axisLeftLabel : mapping.x1.value)
+          .attr("fill", "currentColor")
+          .attr("dx", x1)
+      labelX1
+          .attr("transform", `translate(${labelX1._groups[0][0].getBBox().width / 2}, ${-5})`)
+    }
 
-    const {x: x2} = x2Axis._groups[0][0].getBBox()
-    const labelX2 = x2Axis
-        .append('text')
-        .attr('font-family', 'sans-serif')
-        .attr('font-size', 10)
-        .attr('class', 'labels')
-        .text(mapping.x2.value)
-        .attr("fill", "currentColor")
-        .attr("dx", x2)
-    labelX2
-        .attr("transform", `translate(${labelX2._groups[0][0].getBBox().width / 2}, -5)`)
+    if (axisRightLabelVisible) {
+      const {x: x2, width: widthX2} = x2Axis._groups[0][0].getBBox()
+      labelX2 = x2Axis
+          .append('text')
+          .attr('font-family', 'sans-serif')
+          .attr('font-size', 10)
+          .attr('class', 'labels')
+          .text(axisRightLabel ? axisRightLabel : mapping.x2.value)
+          .attr("fill", "currentColor")
+          .attr("dx", x2 + widthX2)
+      labelX2
+          .attr("transform", `translate(${-labelX2._groups[0][0].getBBox().width / 2}, -5)`)
+    }
 
-    const labelY = yAxis
-        .append('text')
-        .attr('font-family', 'sans-serif')
-        .attr('font-size', 10)
-        .attr('class', 'labels')
-        .text(mapping.y.value)
-        .attr("fill", "currentColor")
-    labelY
-        .attr("transform", `translate(${-labelY._groups[0][0].getBBox().width / 2}, 0)`)
+    if (axisVerticalLabelVisible) {
+      labelY = yAxis
+          .append('text')
+          .attr('font-family', 'sans-serif')
+          .attr('font-size', 10)
+          .attr('class', 'labels')
+          .text(axisVerticalLabel ? axisVerticalLabel : mapping.y.value)
+          .attr("fill", "currentColor")
+      labelY
+          .attr("transform", `translate(${-labelY._groups[0][0].getBBox().width / 2}, 0)`)
+    }
+
 
     return {labelX1, labelX2, labelY}
   }
@@ -208,7 +236,7 @@ export function render(node, data, visualOptions, mapping, styles) {
         .selectAll('rect')
         .data(data)
         .join('rect')
-        .attr('x', (boundWidth + spaceCommonAxis)  / 2)
+        .attr('x', d => boundWidthOneChart / 2  - x1Scale(x1Accessor(d)))
         .attr('y', (d) => yScale(yAccessor(d)))
         .attr('height', yScale.bandwidth())
         .attr('width', (d) => x1Scale(x1Accessor(d)))
@@ -221,7 +249,7 @@ export function render(node, data, visualOptions, mapping, styles) {
         .selectAll('rect')
         .data(data)
         .join('rect')
-        .attr('x', d => boundWidthOneChart / 2  - x2Scale(x2Accessor(d)))
+        .attr('x', (boundWidth + spaceCommonAxis)  / 2)
         .attr('y', (d) => yScale(yAccessor(d)))
         .attr('height', yScale.bandwidth())
         .attr('width', (d) => x2Scale(x2Accessor(d)))

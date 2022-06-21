@@ -1,23 +1,16 @@
 export const visualOptions = {
-    //label
-    title : {
-        type: "text",
-        label: "Chart title",
-        default: "",
-        group: "label"
-    },
-
+    //axis
     labelLeftRotation : {
         type: "number",
-        label: "Left label rotation",
+        label: "Left tick label rotation",
         default: 0,
-        group: "label"
+        group: "axis"
     },
 
     labelLeftAlignment : {
         type: "text",
-        label: 'Align left labels to:',
-        group: 'label',
+        label: 'Align left tick labels to:',
+        group: 'axis',
         options: [
             { label: 'Left', value: 'start' },
             { label: 'Middle', value: 'middle' },
@@ -28,15 +21,15 @@ export const visualOptions = {
 
     labelRightRotation : {
         type: "number",
-        label: "Right label rotation",
+        label: "Right tick label rotation",
         default: 0,
-        group: "label"
+        group: "axis"
     },
 
     labelRightAlignment : {
         type: "text",
-        label: 'Align right labels to:',
-        group: 'label',
+        label: 'Align right tick labels to:',
+        group: 'axis',
         options: [
             { label: 'Left', value: 'start' },
             { label: 'Middle', value: 'middle' },
@@ -45,7 +38,56 @@ export const visualOptions = {
         default: 'middle',
     },
 
+    axisLeftLabel : {
+        type: "text",
+        label: "Left label override",
+        default: "",
+        group: "axis"
+    },
+
+    axisLeftLabelVisible : {
+        type: "boolean",
+        label: "Left label visible",
+        default: true,
+        group: "axis"
+    },
+
+    axisRightLabel : {
+        type: "text",
+        label: "Right label override",
+        default: "",
+        group: "axis"
+    },
+
+    axisRightLabelVisible : {
+        type: "boolean",
+        label: "Right label visible",
+        default: true,
+        group: "axis"
+    },
+
+    axisVerticalLabel : {
+        type: "text",
+        label: "Vertical label override",
+        default: "",
+        group: "axis"
+    },
+
+    axisVerticalLabelVisible : {
+        type: "boolean",
+        label: "Vertical label visible",
+        default: true,
+        group: "axis"
+    },
+
     //artboard
+    title : {
+        type: "text",
+        label: "Chart title",
+        default: "",
+        group: "artboard"
+    },
+
     marginTop: {
         type: 'number',
         label: 'Margin (top)',
@@ -84,7 +126,7 @@ export const visualOptions = {
 
     padding: {
         type: 'number',
-        label: 'Padding',
+        label: 'Padding Bars',
         default: 1,
         group: 'chart',
     },
@@ -99,7 +141,7 @@ export const visualOptions = {
             { label: 'Name', value: 'name' },
             { label: 'Original', value: 'original' },
         ],
-        default: 'name',
+        default: 'original',
     },
 
     colorScale1: {
