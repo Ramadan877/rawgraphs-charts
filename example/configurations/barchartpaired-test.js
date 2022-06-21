@@ -1,4 +1,4 @@
-import data from '../datasets/Movies.tsv'
+import data from '../datasets/population_2019.csv'
 import chart from 'rawcharts/barchartpaired'
 
 export default {
@@ -9,17 +9,15 @@ export default {
             type: 'date',
             dateFormat: 'YYYY',
         },
-        'Box Office (Millions, adjusted for inflation)': 'number',
-        'Budget (Millions, adjusted for inflation)': 'number',
-        Rating: 'number',
-        Title: 'string',
-        Genre: 'string',
+        Alter: 'string',
+        Maenner: 'number',
+        Frauen: 'number',
     },
     mapping: {
-        x1: { value: ['Budget (Millions, adjusted for inflation)'] },
+        x1: { value: ['Maenner'] },
         //x2: { value: ['Budget (Millions, adjusted for inflation)'] },
-        x2: { value: ['Box Office (Millions, adjusted for inflation)'] },
-        y: { value: ['Rating'] },
+        x2: { value: ['Frauen'] },
+        y: { value: ['Alter'] },
         // color: { value: ['Genre'] },
     },
     visualOptions: {
