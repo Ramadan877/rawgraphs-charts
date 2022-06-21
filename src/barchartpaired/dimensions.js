@@ -1,19 +1,19 @@
 export const dimensions = [
   {
     id: 'x1',
-    name: 'x1 axis',
+    name: 'Left Side',
     validTypes: ['number'],
     required: true,
   },
   {
     id: 'x2',
-    name: 'x2 axis',
+    name: 'Right Side',
     validTypes: ['number'],
     required: true,
   },
   {
     id: 'y',
-    name: 'y axis',
+    name: 'Y axis',
     validTypes: ['number', 'string'],
     required: true,
   }
