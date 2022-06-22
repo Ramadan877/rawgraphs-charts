@@ -13,7 +13,7 @@ and on the official instructions for adding a new card;
 https://github.com/rawgraphs/rawgraphs-charts/blob/master/docs/add-a-new-chart.md
 */
 
-import * as d3 from 'd3'
+import * as d3 from 'd3';
 
 export function render(svgNode, data, visualOptions, mapping, originalData) {
   const {
@@ -27,21 +27,25 @@ export function render(svgNode, data, visualOptions, mapping, originalData) {
     marginLeft,
     //chart
     ringWidth,
-    ringPadding,
+    chordPadding,
+    chordPaddingSource,
+    chordPaddingTarget,
     colorRing,
     colorChords,
+    chordOpacity,
     showChordGroupLabels,
   } = visualOptions
 
-  const margin = {
-    top: marginTop,
-    right: marginRight,
-    bottom: marginBottom,
-    left: marginLeft,
-  }
+  d3.select(svgNode)
+    .append('rect')
+    .attr('width', width)
+    .attr('height', height)
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('fill', background)
+    .attr('id', 'backgorund')
 
   const { names, matrix } = matrixFromData(data);
-  const colors = Array(names.length).fill(colorChords); // TODO
 
   const innerWidth = width - marginLeft - marginRight;
   const innerHeight = height - marginTop - marginBottom;
@@ -53,19 +57,18 @@ export function render(svgNode, data, visualOptions, mapping, originalData) {
   const translationY = innerHeight / 2 + marginTop;
 
   const svg = d3.select(svgNode)
-      .append('g')
-      .attr('transform', 'translate(${translationX},${translationY})')
-      .attr('id', 'viz');
+    .append('g')
+    .attr('transform', `translate(${translationX},${translationY})`)
+    .attr('id', 'chord_diagram');
 
   const outerRadius = radius;
   const innerRadius = outerRadius - ringWidth;
 
   const chords = createChords(matrix, innerRadius);
 
-  drawRing(svg, chords, colorRing, innerRadius, outerRadius);
-  drawChords(svg, chords, colors, innerRadius);
-  if (showChordGroupLabels)
-  {
+  drawRing(svg, chords, innerRadius, outerRadius);
+  drawChords(svg, chords, innerRadius);
+  if (showChordGroupLabels) {
     drawGroupLabels(svg, chords, names, outerRadius);
   }
 
@@ -89,32 +92,15 @@ export function render(svgNode, data, visualOptions, mapping, originalData) {
     return { names, matrix };
   }
 
-  function createChordDiagram() {
-
-    const innerWidth = width - marginLeft - marginRight;
-    const innerHeight = height - marginTop - marginBottom;
-
-    const diameter = Math.min(innerWidth, innerHeight);
-    const radius = diameter / 2;
-
-    const translationX = innerWidth / 2 + marginLeft;
-    const translationY = innerHeight / 2 + marginTop;
-
-    return d3.select(svgNode)
-      .append('g')
-      .attr('transform', 'translate(${translationX},${translationY})')
-      .attr('id', 'viz');
-  }
-
   function createChords(matrix, innerRadius) {
     return d3.chord()
-      .padAngle(ringPadding / innerRadius)
+      .padAngle(chordPadding / innerRadius)
       .sortSubgroups(d3.descending)
       .sortChords(d3.descending)
       (matrix);
   }
 
-  function drawRing(svg, chords, color, innerRadius, outerRadius) {
+  function drawRing(svg, chords, innerRadius, outerRadius) {
 
     const arc = d3.arc()
       .innerRadius(innerRadius)
@@ -125,22 +111,22 @@ export function render(svgNode, data, visualOptions, mapping, originalData) {
       .data(chords.groups)
       .join("g")
       .append("path")
-      .attr("fill", (d) => color)
+      .attr("fill", (d) => colorRing(d))
       .attr("d", arc)
   }
 
-  function drawChords(svg, chords, colors, innerRadius) {
+  function drawChords(svg, chords, innerRadius) {
 
     const ribbon = d3.ribbon()
-      .sourceRadius(() => innerRadius)
-      .targetRadius(() => innerRadius - 50)
+      .sourceRadius(() => innerRadius - chordPaddingSource)
+      .targetRadius(() => innerRadius - chordPaddingTarget)
 
     svg.append("g")
-      .attr("fill-opacity", 0.7)
+      .attr("fill-opacity", chordOpacity)
       .selectAll("path")
       .data(chords)
       .join("path")
-      .attr("fill", d => colors[d.source.index])
+      .attr("fill", d => colorChords(d))
       .attr("d", ribbon);
   }
 
