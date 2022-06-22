@@ -5,6 +5,7 @@ https://github.com/rawgraphs/rawgraphs-charts/tree/master/src/arcdiagram/visualO
 
 
 export const visualOptions = {
+
   marginTop: {
     type: 'number',
     label: 'Margin (top)',
@@ -40,13 +41,26 @@ export const visualOptions = {
     group: 'chart',
   },
 
-  ringPadding: {
+  chordPadding: {
     type: 'number',
-    label: 'Ring padding',
+    label: 'Category padding',
     default: 10,
     group: 'chart',
   },
 
+  chordPaddingSource: {
+    type: 'number',
+    label: 'Chord padding (source)',
+    default: 10,
+    group: 'chart',
+  },
+
+  chordPaddingTarget: {
+    type: 'number',
+    label: 'Chord padding (target)',
+    default: 30,
+    group: 'chart',
+  },
 
   /*
   Copied and customized from barchart:
@@ -57,8 +71,10 @@ export const visualOptions = {
     label: 'Color Ring',
     dimension: 'colorring',
     default: {
+      label: 'TEST',
       scaleType: 'ordinal',
       interpolator: 'interpolateSpectral',
+      value: "red",
     },
     group: 'colors',
   },
@@ -70,20 +86,31 @@ export const visualOptions = {
     default: {
       scaleType: 'ordinal',
       interpolator: 'interpolateSpectral',
+      value: "#000000"
     },
     group: 'colors',
   },
 
+  chordOpacity: {
+    type: 'number',
+    label: 'Chord opacity',
+    default: 0.7,
+    min: 0.1,
+    max: 1,
+    step: 0.05,
+    group: 'colors',
+  },
 
-/*
-Copied and customized from linechart:
-https://github.com/rawgraphs/rawgraphs-charts/tree/master/src/linechart
-*/
-showChordGroupLabels: {
-  type: 'boolean',
-  label: 'Show Chor Group Labels',
-  default: true,
-  group: 'labels',
-},
+
+  /*
+  Copied and customized from linechart:
+  https://github.com/rawgraphs/rawgraphs-charts/tree/master/src/linechart
+  */
+  showChordGroupLabels: {
+    type: 'boolean',
+    label: 'Show Chor Group Labels',
+    default: true,
+    group: 'labels',
+  },
 
 }

@@ -1,3 +1,6 @@
+import icon from './chorddiagram.svg'
+import thumbnail from './chorddiagram_thumb.svg'
+
 /*
 Copied and adapted from:
 https://github.com/rawgraphs/rawgraphs-charts/blob/master/docs/add-a-new-chart.md
@@ -6,8 +9,12 @@ https://github.com/rawgraphs/rawgraphs-charts/blob/master/docs/add-a-new-chart.m
 export const metadata = {
   name: 'Chord Diagram',
   id: 'rawgraphs.chorddiagram',
-  category: 'Visualization',
-  description: 'Chord Diagram',
-  code: 'https://observablehq.com/@d3/chord-diagram and https://github.com/rawgraphs/rawgraphs-charts/tree/master/src/arcdiagram',
-  tutorial: 'https://rawgraphs.io/learning/',
+  thumbnail,
+  icon,
+  categories: ['networks'],
+  description:
+    'A particular kind of network graph, allows seeing relationships among nodes. Nodes are displayed on a circular axis (outer ring), and edges between nodes are represented as chords. Usually, incoming connections are distinguished from outgoing relations using a larger intend or padding.',
+  // code:
+  //   'https://github.com/rawgraphs/rawgraphs-charts/tree/master/src/arcdiagram',
+  // tutorial: 'https://rawgraphs.io/learning/how-to-make-an-arc-diagram/',
 }
