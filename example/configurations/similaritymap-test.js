@@ -1,29 +1,29 @@
-import data from '../datasets/Movies.tsv'
+import data from '../datasets/fake-multiset.tsv'
 import chart from 'rawcharts/similaritymap'
 
 export default {
     chart,
     data,
     dataTypes: {
-        Year: {
-            type: 'date',
-            dateFormat: 'YYYY',
-        },
-        'Box Office (Millions, adjusted for inflation)': 'number',
-        'Budget (Millions, adjusted for inflation)': 'number',
-        Rating: 'number',
-        Title: 'string',
-        Genre: 'string',
+        group: 'string',
+        Value_1: 'number',
+        Value_2: 'number',
+        Value_3: 'number',
     },
     mapping: {
-        x: { value: ['Budget (Millions, adjusted for inflation)'] },
-        y: { value: ['Box Office (Millions, adjusted for inflation)'] },
-        color: { value: ['Genre'] },
+        classification: {
+            value: ['group']
+        },
+        dimensions: {
+            value: ['Value_1', 'Value_2', 'Value_3'],
+        },
     },
     visualOptions: {
-        width: 800,
-        height: 600,
-        background: 'salmon',
-        dotsRadius: 10,
+        width: 1000,
+        height: 700,
+        marginTop: 50,
+        marginBottom: 50,
+        marginRight: 50,
+        marginLeft: 50,
     },
 }

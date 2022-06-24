@@ -1,5 +1,4 @@
 export const mapData = {
-  x: 'get',
-  y: 'get',
-  color: 'get',
+  classification: 'get',
+  dimensions: 'get',
 }

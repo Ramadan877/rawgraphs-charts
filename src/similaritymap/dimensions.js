@@ -1,22 +1,17 @@
 export const dimensions = [
   {
-    id: 'x',
-    name: 'x axis',
-    validTypes: ['number'],
-    required: true,
-  },
-
-  {
-    id: 'y',
-    name: 'y axis',
-    validTypes: ['number'],
-    required: true,
-  },
-
-  {
-    id: 'color',
-    name: 'Color',
-    validTypes: ['number', 'date', 'string'],
+    id: 'classification',
+    name: 'Classification',
+    validTypes: ['string', 'number'],
     required: false,
   },
+
+  {
+    id: 'dimensions',
+    name: 'Dimensions',
+    validTypes: ['number'],
+    required: true,
+    multiple: true,
+    operation: 'get',
+  }
 ]
