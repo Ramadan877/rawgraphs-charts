@@ -13,7 +13,7 @@ export const metadata = {
   icon,
   categories: ['networks'],
   description:
-    'A particular kind of network graph, allows seeing relationships among nodes. Nodes are displayed on a circular axis (outer ring), and edges between nodes are represented as chords. Usually, incoming connections are distinguished from outgoing relations using a larger intend or padding.',
+    '', //TODO
   // code:
   //   'https://github.com/rawgraphs/rawgraphs-charts/tree/master/src/arcdiagram',
   // tutorial: 'https://rawgraphs.io/learning/how-to-make-an-arc-diagram/',

@@ -66,27 +66,13 @@ export const visualOptions = {
   Copied and customized from barchart:
   https://github.com/rawgraphs/rawgraphs-charts/tree/master/src/barchart
   */
-  colorRing: {
+  chordColors: {
     type: 'colorScale',
-    label: 'Color Ring',
-    dimension: 'colorring',
-    default: {
-      label: 'TEST',
-      scaleType: 'ordinal',
-      interpolator: 'interpolateSpectral',
-      value: "red",
-    },
-    group: 'colors',
-  },
-
-  colorChords: {
-    type: 'colorScale',
-    label: 'Color Chords',
-    dimension: 'colorring',
+    label: 'Chord Colors',
+    dimension: 'source',
     default: {
       scaleType: 'ordinal',
       interpolator: 'interpolateSpectral',
-      value: "#000000"
     },
     group: 'colors',
   },
