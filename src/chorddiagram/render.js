@@ -6,7 +6,7 @@ https://observablehq.com/@d3/chord-dependency-diagram
 And on the document from Yan Holtz:
 https://d3-graph-gallery.com/graph/chord_axis_labels.html
 
-The Porting of the Chord Diagram to RawGraps2.0 is based on the implementation of the Arc Diagram:
+Implementation of the Chord Diagram and the Porting to RawGraps2.0 is based on the implementation of the Arc Diagram:
 https://github.com/rawgraphs/rawgraphs-charts/tree/master/src/arcdiagram
 
 and on the official instructions for adding a new card;
@@ -30,20 +30,10 @@ export function render(svgNode, data, visualOptions, mapping, originalData) {
     chordPadding,
     chordPaddingSource,
     chordPaddingTarget,
-    colorRing,
-    colorChords,
+    chordColors,
     chordOpacity,
     showChordGroupLabels,
   } = visualOptions
-
-  d3.select(svgNode)
-    .append('rect')
-    .attr('width', width)
-    .attr('height', height)
-    .attr('x', 0)
-    .attr('y', 0)
-    .attr('fill', background)
-    .attr('id', 'backgorund')
 
   const { names, matrix } = matrixFromData(data);
 
@@ -56,7 +46,17 @@ export function render(svgNode, data, visualOptions, mapping, originalData) {
   const translationX = innerWidth / 2 + marginLeft;
   const translationY = innerHeight / 2 + marginTop;
 
-  const svg = d3.select(svgNode)
+  d3.select(svgNode)
+    .append('rect')
+    .attr('width', width)
+    .attr('height', height)
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('fill', background)
+    .attr('id', 'backgorund')
+
+  const svg = d3
+    .select(svgNode)
     .append('g')
     .attr('transform', `translate(${translationX},${translationY})`)
     .attr('id', 'chord_diagram');
@@ -93,11 +93,11 @@ export function render(svgNode, data, visualOptions, mapping, originalData) {
   }
 
   function createChords(matrix, innerRadius) {
-    return d3.chord()
+    const chords = d3.chordDirected()
       .padAngle(chordPadding / innerRadius)
       .sortSubgroups(d3.descending)
-      .sortChords(d3.descending)
-      (matrix);
+      .sortChords(d3.descending);
+    return chords(matrix);
   }
 
   function drawRing(svg, chords, innerRadius, outerRadius) {
@@ -111,7 +111,7 @@ export function render(svgNode, data, visualOptions, mapping, originalData) {
       .data(chords.groups)
       .join("g")
       .append("path")
-      .attr("fill", (d) => colorRing(d))
+      .attr("fill", (d) => chordColors(names[d.index]))
       .attr("d", arc)
   }
 
@@ -126,7 +126,7 @@ export function render(svgNode, data, visualOptions, mapping, originalData) {
       .selectAll("path")
       .data(chords)
       .join("path")
-      .attr("fill", d => colorChords(d))
+      .attr("fill", (d) => chordColors(names[d.source.index]))
       .attr("d", ribbon);
   }
 
@@ -141,12 +141,12 @@ export function render(svgNode, data, visualOptions, mapping, originalData) {
 
     const groupLabels = labels.append("g")
       .selectAll("g")
-      .data(d => [{ value: d.value, angle: d.startAngle }])
+      .data(d => [{ value: d.value, angle: (d.startAngle + d.endAngle) / 2 }])
       .join("g")
       .attr("transform", d => `rotate(${d.angle * 180 / Math.PI - 90}) translate(${radius},0)`)
       .append("text")
       .attr("x", 8)
-      .attr("dy", d => d.angle > Math.PI ? "-0.2em" : "0.8em")
+      .attr("dy", "0.35em")
       .attr("transform", d => d.angle > Math.PI ? "rotate(180) translate(-16)" : null)
       .attr("text-anchor", d => d.angle > Math.PI ? "end" : null)
 
