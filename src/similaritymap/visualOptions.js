@@ -35,6 +35,21 @@ export const visualOptions = {
         group: 'artboard',
     },
 
+    //parameter
+    epsilon: { // epsilon is learning rate (10 = default)
+        type: 'number',
+        label: 'Epsilon',
+        default: 10,
+        group: 't-SNE',
+    },
+
+    perplexity: { // roughly how many neighbors each point influences (30 = default)
+        type: 'number',
+        label: 'Perplexity',
+        default: 30,
+        group: 't-SNE',
+    },
+
     //chart
     dotsRadius: {
         type: 'number',

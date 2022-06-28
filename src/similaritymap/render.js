@@ -15,7 +15,9 @@ export function render(node, data, visualOptions, mapping) {
     background,
     dotsRadius,
     colorScale,
-    title
+    title,
+    epsilon,
+    perplexity,
   } = visualOptions
 
   const {
@@ -60,11 +62,7 @@ export function render(node, data, visualOptions, mapping) {
   }
 
   function calcReducedDimensions() {
-    var opt = {}
-    opt.epsilon = 10; // epsilon is learning rate (10 = default)
-    opt.perplexity = 30; // roughly how many neighbors each point influences (30 = default)
-    opt.dim = 2; // dimensionality of the embedding (2 = default)
-
+    const opt = {dim : 2, epsilon, perplexity}
     var tsne =  allTSNEE(opt)
     const tsneData = data.map(row => {
       return row.dimensions
