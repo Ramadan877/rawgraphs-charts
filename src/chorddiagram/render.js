@@ -33,6 +33,8 @@ export function render(svgNode, data, visualOptions, mapping, originalData) {
     chordColors,
     chordOpacity,
     showChordGroupLabels,
+    fontSize,
+    fontFamily,
   } = visualOptions
 
   const { names, matrix } = matrixFromData(data);
@@ -117,7 +119,7 @@ export function render(svgNode, data, visualOptions, mapping, originalData) {
 
   function drawChords(svg, chords, innerRadius) {
 
-    const ribbon = d3.ribbon()
+    const ribbon = d3.ribbonArrow()
       .sourceRadius(() => innerRadius - chordPaddingSource)
       .targetRadius(() => innerRadius - chordPaddingTarget)
 
@@ -133,8 +135,8 @@ export function render(svgNode, data, visualOptions, mapping, originalData) {
   function drawGroupLabels(svg, chords, names, radius) {
 
     const labels = svg.append("g")
-      .attr("font-size", 13)
-      .attr("font-family", "sans-serif")
+      .attr("font-size", fontSize)
+      .attr("font-family", fontFamily)
       .selectAll("g")
       .data(chords.groups)
       .join("g");
