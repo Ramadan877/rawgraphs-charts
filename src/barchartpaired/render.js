@@ -149,11 +149,16 @@ export function render(node, data, visualOptions, mapping, styles) {
     const yAxis = bounds.append("g")
         .call(yAxisGenerator)
         .attr("text-anchor", "left")
-    yAxis.attr("transform", `translate(${(boundWidth ) / 2}, 0)`)//+ yAxis._groups[0][0].getBBox().width
+    //yAxis.attr("transform", `translate(${(boundWidthOneChart)}, 0)`)//+ yAxis._groups[0][0].getBBox().width
+    yAxis.attr("transform", `translate(${boundWidth / 2}, 0)`)
     yAxis.select("path")
         .remove()//attr("stroke", "none")
     yAxis.selectAll("line")
         .remove()//.attr("stroke", "none")
+    yAxis.selectAll("text")
+        .attr("dx", "0")
+        .attr("x", "0")
+        .attr("text-anchor", "middle")
 
     const x1AxisGenerator = d3.axisBottom()
         .scale(x1ScaleReverse)
