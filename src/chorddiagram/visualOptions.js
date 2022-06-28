@@ -63,7 +63,7 @@ export const visualOptions = {
   },
 
   /*
-  Copied and customized from barchart:
+  Inspired and customized from barchart:
   https://github.com/rawgraphs/rawgraphs-charts/tree/master/src/barchart
   */
   chordColors: {
@@ -94,9 +94,32 @@ export const visualOptions = {
   */
   showChordGroupLabels: {
     type: 'boolean',
-    label: 'Show Chor Group Labels',
+    label: 'Show Chord Group Labels',
     default: true,
     group: 'labels',
+  },
+
+  fontSize: {
+    type: 'number',
+    label: 'Font size',
+    default: 12,
+    group: 'labels',
+  },
+
+  /*
+  Inspired and customized from barchart:
+  https://github.com/rawgraphs/rawgraphs-charts/tree/master/src/barchart
+  */
+  fontFamily: {
+    type: 'text',
+    label: 'Font family',
+    group: 'labels',
+    options: [
+      { label: 'Serif', value: 'serif' },
+      { label: 'Sans-serif', value: 'sans-serif' },
+      { label: 'Monospace', value: 'monospace' },
+    ],
+    default: 'sans-serif',
   },
 
 }
