@@ -83,7 +83,7 @@ export const visualOptions = {
     //artboard
     title : {
         type: "text",
-        label: "Chart title",
+        label: "Chart Title",
         default: "",
         group: "artboard"
     },

@@ -6,8 +6,8 @@ export const metadata = {
   id: 'rawgraphs.barchartpaired',
   thumbnail,
   icon,
-  categories: ['Test', 'Debugging'],
-  description: 'A chart for observing the impact of two categories over a dependency function',
+  categories: ['Correlations', 'Comparison'],
+  description: 'A bar chart with which compares two categories of one entity depending on a second variable.',
   code: 'https://github.com/rawgraphs',
   tutorial: 'https://rawgraphs.io/learning/',
 }
