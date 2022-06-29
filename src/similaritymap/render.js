@@ -1,0 +1,162 @@
+import * as d3 from 'd3'
+import {allTSNEE} from "../tsne"
+import '../d3-styles.js'
+
+export function render(node, data, visualOptions, mapping) {
+  // destructurate visual visualOptions
+  const {
+    // default options
+    width,
+    height,
+    marginLeft,
+    marginRight,
+    marginBottom,
+    marginTop,
+    background,
+    dotsRadius,
+    colorScale,
+    title,
+    epsilon,
+    perplexity,
+  } = visualOptions
+
+  const {
+    titleSize,
+    boundWidth,
+    boundHeight,
+    boundLeft,
+    boundTop,
+    xAccessor,
+    yAccessor,
+    reducedDimensions,
+    reducedDimensionsClassified
+  } = calcProps()
+  const xDimension = reducedDimensions.map(point => point[0])
+  const yDimension = reducedDimensions.map(point => point[1])
+
+  const svg = d3.select(node)
+  const bounds = createBounds()
+  const {xScale, yScale} = createScales()
+  const {xAxis, yAxis} = createAxes()
+  const {dots} = drawScatterPoints()
+
+  function calcProps() {
+    const minTitleHeight = 300
+    const titleSize = height / 30
+
+    let boundWidth = width - marginLeft - marginRight
+    let boundHeight = height - marginTop - marginBottom
+    let boundLeft = marginLeft + 12 //lr: why the +12? -> the standard marginLeft parameter is not transfered from visualOptions.js in sanbox
+    let boundTop =  boundHeight >= minTitleHeight ? marginTop + titleSize : marginTop
+
+    if (boundHeight >= minTitleHeight) {
+      boundHeight -= titleSize
+    }
+
+    const xAccessor = d => d[0]
+    const yAccessor = d => d[1]
+
+    const {reducedDimensions, reducedDimensionsClassified} = calcReducedDimensions()
+
+    return {minTitleHeight, titleSize, boundWidth, boundHeight, boundLeft, boundTop,
+      xAccessor, yAccessor, reducedDimensions, reducedDimensionsClassified}
+  }
+
+  function calcReducedDimensions() {
+    const opt = {dim : 2, epsilon, perplexity}
+    var tsne =  allTSNEE(opt)
+    const tsneData = data.map(row => {
+      return row.dimensions
+    })
+
+    tsne.initDataRaw(tsneData)
+
+    for(var k = 0; k < 500; k++) {
+      tsne.step(); // every time you call this, solution gets better
+    }
+
+    const reducedDimensions = tsne.getSolution(); // Y is an array of 2-D points that you can plot
+
+    const reducedDimensionsClassified = reducedDimensions.map((e, i) => {
+      let classification = undefined
+      if (data[i] && data[i].classification) {
+        classification = data[i].classification
+      }
+      return {reducedDimension: e, classification}
+    })
+
+    return {reducedDimensions, reducedDimensionsClassified}
+  }
+
+  function createBounds() {
+    svg.append('rect')
+        .attr('width', width)
+        .attr('height', height)
+        .attr('fill', background)
+
+    if (titleSize) {
+      svg.append('text')
+          .text(title)
+          .attr('x', width / 2)
+          .attr('y', marginTop)
+          .style("text-anchor", "middle")
+          .attr("font-size", titleSize)
+    }
+
+    return svg.append("g")
+        .attr("transform", `translate(
+      ${boundLeft},
+      ${boundTop})`)
+  }
+
+  function createScales() {
+    const xScale = d3
+        .scaleLinear()
+        .domain(d3.extent(xDimension))
+        .range([0, boundWidth])
+        .nice()
+
+    const yScale = d3
+        .scaleLinear()
+        .domain(d3.extent(yDimension))
+        .range([boundHeight, 0])
+        .nice()
+
+    return {xScale, yScale}
+  }
+
+  function createAxes() {
+    const yAxisGenerator = d3.axisLeft()
+        .scale(yScale)
+        .tickFormat(d3.format(".1e"))
+    const yAxis = bounds.append("g")
+        .call(yAxisGenerator)
+        .attr("text-anchor", "left")
+    yAxis.attr("transform", `translate(${0}, 0)`)
+
+    yAxis.selectAll("text")
+        .attr("transform", `translate(${0}, 0)`)
+        .style("text-anchor", "end")
+
+    const xAxisGenerator = d3.axisBottom()
+        .scale(xScale)
+        .tickFormat(d3.format(".1e"))
+    const xAxis = bounds.append("g")
+        .call(xAxisGenerator)
+        .attr("transform",
+            `translate(${0}, ${boundHeight})`)
+
+    return({xAxis, yAxis})
+  }
+
+  function drawScatterPoints() {
+    const dots = bounds.selectAll("circle").data(reducedDimensionsClassified)
+
+    dots.join("circle")
+        .attr("cx", d => xScale(xAccessor(d.reducedDimension)))
+        .attr("cy", d => yScale(yAccessor(d.reducedDimension)))
+        .attr("r", dotsRadius)
+        .attr("fill", (d) => d.classification ? colorScale(d.classification) : "#0365a8")
+    return dots
+  }
+}
