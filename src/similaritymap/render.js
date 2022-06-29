@@ -28,7 +28,8 @@ export function render(node, data, visualOptions, mapping) {
     boundTop,
     xAccessor,
     yAccessor,
-    reducedDimensions
+    reducedDimensions,
+    reducedDimensionsClassified
   } = calcProps()
   const xDimension = reducedDimensions.map(point => point[0])
   const yDimension = reducedDimensions.map(point => point[1])
@@ -45,7 +46,7 @@ export function render(node, data, visualOptions, mapping) {
 
     let boundWidth = width - marginLeft - marginRight
     let boundHeight = height - marginTop - marginBottom
-    let boundLeft = marginLeft
+    let boundLeft = marginLeft + 12 //lr: why the +12? -> the standard marginLeft parameter is not transfered from visualOptions.js in sanbox
     let boundTop =  boundHeight >= minTitleHeight ? marginTop + titleSize : marginTop
 
     if (boundHeight >= minTitleHeight) {
@@ -55,10 +56,10 @@ export function render(node, data, visualOptions, mapping) {
     const xAccessor = d => d[0]
     const yAccessor = d => d[1]
 
-    const reducedDimensions = calcReducedDimensions()
+    const {reducedDimensions, reducedDimensionsClassified} = calcReducedDimensions()
 
     return {minTitleHeight, titleSize, boundWidth, boundHeight, boundLeft, boundTop,
-      xAccessor, yAccessor, reducedDimensions}
+      xAccessor, yAccessor, reducedDimensions, reducedDimensionsClassified}
   }
 
   function calcReducedDimensions() {
@@ -74,7 +75,17 @@ export function render(node, data, visualOptions, mapping) {
       tsne.step(); // every time you call this, solution gets better
     }
 
-    return tsne.getSolution(); // Y is an array of 2-D points that you can plot
+    const reducedDimensions = tsne.getSolution(); // Y is an array of 2-D points that you can plot
+
+    const reducedDimensionsClassified = reducedDimensions.map((e, i) => {
+      let classification = undefined
+      if (data[i] && data[i].classification) {
+        classification = data[i].classification
+      }
+      return {reducedDimension: e, classification}
+    })
+
+    return {reducedDimensions, reducedDimensionsClassified}
   }
 
   function createBounds() {
@@ -109,6 +120,7 @@ export function render(node, data, visualOptions, mapping) {
         .scaleLinear()
         .domain(d3.extent(yDimension))
         .range([boundHeight, 0])
+        .nice()
 
     return {xScale, yScale}
   }
@@ -116,17 +128,19 @@ export function render(node, data, visualOptions, mapping) {
   function createAxes() {
     const yAxisGenerator = d3.axisLeft()
         .scale(yScale)
+        .tickFormat(d3.format(".1e"))
     const yAxis = bounds.append("g")
         .call(yAxisGenerator)
         .attr("text-anchor", "left")
     yAxis.attr("transform", `translate(${0}, 0)`)
 
     yAxis.selectAll("text")
-        // .attr("text-anchor", labelLeftAlignment) //TODO make good visualization
-        .attr("transform", `translate(${40}, 0)`)
+        .attr("transform", `translate(${0}, 0)`)
+        .style("text-anchor", "end")
 
     const xAxisGenerator = d3.axisBottom()
         .scale(xScale)
+        .tickFormat(d3.format(".1e"))
     const xAxis = bounds.append("g")
         .call(xAxisGenerator)
         .attr("transform",
@@ -136,13 +150,13 @@ export function render(node, data, visualOptions, mapping) {
   }
 
   function drawScatterPoints() {
-        const dots = bounds.selectAll("circle").data(reducedDimensions)
-        dots.join("circle")
-            .attr("cx", d => xScale(xAccessor(d)))
-            .attr("cy", d => yScale(yAccessor(d)))
-            .attr("r", 5)
-            // .attr("fill", color)
-            .attr("fill", "#0365a8")
+    const dots = bounds.selectAll("circle").data(reducedDimensionsClassified)
+
+    dots.join("circle")
+        .attr("cx", d => xScale(xAccessor(d.reducedDimension)))
+        .attr("cy", d => yScale(yAccessor(d.reducedDimension)))
+        .attr("r", dotsRadius)
+        .attr("fill", (d) => d.classification ? colorScale(d.classification) : "#0365a8")
     return dots
   }
 }
