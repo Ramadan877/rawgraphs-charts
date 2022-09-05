@@ -3,7 +3,7 @@ export const visualOptions = {
     labelLeftRotation : {
         type: "number",
         label: "Left tick label rotation",
-        default: 0,
+        default: -45,
         group: "axis"
     },
 
@@ -16,13 +16,13 @@ export const visualOptions = {
             { label: 'Middle', value: 'middle' },
             { label: 'Right', value: 'end' },
         ],
-        default: 'middle',
+        default: 'end',
     },
 
     labelRightRotation : {
         type: "number",
         label: "Right tick label rotation",
-        default: 0,
+        default: -45,
         group: "axis"
     },
 
@@ -35,7 +35,7 @@ export const visualOptions = {
             { label: 'Middle', value: 'middle' },
             { label: 'Right', value: 'end' },
         ],
-        default: 'middle',
+        default: 'end',
     },
 
     axisLeftLabel : {
