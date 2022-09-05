@@ -18,6 +18,7 @@ export function render(node, data, visualOptions, mapping) {
     title,
     epsilon,
     perplexity,
+    tickLabelsVisible
   } = visualOptions
 
   const {
@@ -79,10 +80,14 @@ export function render(node, data, visualOptions, mapping) {
 
     const reducedDimensionsClassified = reducedDimensions.map((e, i) => {
       let classification = undefined
+      let label = undefined
       if (data[i] && data[i].classification) {
         classification = data[i].classification
       }
-      return {reducedDimension: e, classification}
+      if (data[i] && data[i].labels) {
+        label = data[i].labels
+      }
+      return {reducedDimension: e, classification, label}
     })
 
     return {reducedDimensions, reducedDimensionsClassified}
@@ -146,17 +151,41 @@ export function render(node, data, visualOptions, mapping) {
         .attr("transform",
             `translate(${0}, ${boundHeight})`)
 
+    if (!tickLabelsVisible) {
+      yAxis.selectAll("text").remove()
+      xAxis.selectAll("text").remove()
+    }
+
     return({xAxis, yAxis})
   }
 
   function drawScatterPoints() {
     const dots = bounds.selectAll("circle").data(reducedDimensionsClassified)
 
+    function mouseOver(e, d) {
+      const x = e.target.cx.animVal.value
+      const y = e.target.cy.animVal.value - 20
+      bounds.append("text")
+          .attr("x", x)
+          .attr("y", y)
+          .attr("font-size", 30)
+          .attr("class", "similarity-map-point-label")
+          .text(d.label);
+      console.log(d.label)
+    }
+
+    function mouseOut(e, d) {
+    bounds.select(".similarity-map-point-label")
+        .remove()
+    }
+
     dots.join("circle")
         .attr("cx", d => xScale(xAccessor(d.reducedDimension)))
         .attr("cy", d => yScale(yAccessor(d.reducedDimension)))
         .attr("r", dotsRadius)
         .attr("fill", (d) => d.classification ? colorScale(d.classification) : "#0365a8")
+        .on('mouseover', mouseOver)
+        .on('mouseout', mouseOut)
     return dots
   }
 }
