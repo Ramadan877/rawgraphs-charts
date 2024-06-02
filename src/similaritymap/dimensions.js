@@ -1,6 +1,6 @@
 export const dimensions = [
   {
-    id: "labels",
+    id: 'labels',
     name: 'Hover Labels',
     validTypes: ['string', 'number'],
     required: false,
@@ -20,5 +20,5 @@ export const dimensions = [
     required: true,
     multiple: true,
     operation: 'get',
-  }
+  },
 ]

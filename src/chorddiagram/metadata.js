@@ -12,8 +12,7 @@ export const metadata = {
   thumbnail,
   icon,
   categories: ['networks'],
-  description:
-    '', //TODO
+  description: '', //TODO
   // code:
   //   'https://github.com/rawgraphs/rawgraphs-charts/tree/master/src/arcdiagram',
   // tutorial: 'https://rawgraphs.io/learning/how-to-make-an-arc-diagram/',

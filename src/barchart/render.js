@@ -362,21 +362,19 @@ function multiFormat(date) {
     d3.timeSecond(date)
   )
 
-  return (
-    d3.timeSecond(date) < date
-      ? formatMillisecond
-      : d3.timeMinute(date) < date
-      ? formatSecond
-      : d3.timeHour(date) < date
-      ? formatMinute
-      : d3.timeDay(date) < date
-      ? formatHour
-      : d3.timeMonth(date) < date
-      ? d3.timeWeek(date) < date
-        ? formatDay
-        : formatWeek
-      : d3.timeYear(date) < date
-      ? formatMonth
-      : formatYear
-  )(date)
+  return (d3.timeSecond(date) < date
+    ? formatMillisecond
+    : d3.timeMinute(date) < date
+    ? formatSecond
+    : d3.timeHour(date) < date
+    ? formatMinute
+    : d3.timeDay(date) < date
+    ? formatHour
+    : d3.timeMonth(date) < date
+    ? d3.timeWeek(date) < date
+      ? formatDay
+      : formatWeek
+    : d3.timeYear(date) < date
+    ? formatMonth
+    : formatYear)(date)
 }

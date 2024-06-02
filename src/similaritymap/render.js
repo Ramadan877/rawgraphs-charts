@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import {allTSNEE} from "../tsne"
+import { allTSNEE } from '../tsne'
 import '../d3-styles.js'
 
 export function render(node, data, visualOptions, mapping) {
@@ -18,7 +18,7 @@ export function render(node, data, visualOptions, mapping) {
     title,
     epsilon,
     perplexity,
-    tickLabelsVisible
+    tickLabelsVisible,
   } = visualOptions
 
   const {
@@ -30,16 +30,16 @@ export function render(node, data, visualOptions, mapping) {
     xAccessor,
     yAccessor,
     reducedDimensions,
-    reducedDimensionsClassified
+    reducedDimensionsClassified,
   } = calcProps()
-  const xDimension = reducedDimensions.map(point => point[0])
-  const yDimension = reducedDimensions.map(point => point[1])
+  const xDimension = reducedDimensions.map((point) => point[0])
+  const yDimension = reducedDimensions.map((point) => point[1])
 
   const svg = d3.select(node)
   const bounds = createBounds()
-  const {xScale, yScale} = createScales()
-  const {xAxis, yAxis} = createAxes()
-  const {dots} = drawScatterPoints()
+  const { xScale, yScale } = createScales()
+  const { xAxis, yAxis } = createAxes()
+  const { dots } = drawScatterPoints()
 
   function calcProps() {
     const minTitleHeight = 300
@@ -48,35 +48,49 @@ export function render(node, data, visualOptions, mapping) {
     let boundWidth = width - marginLeft - marginRight
     let boundHeight = height - marginTop - marginBottom
     let boundLeft = marginLeft + 12 //lr: why the +12? -> the standard marginLeft parameter is not transfered from visualOptions.js in sanbox
-    let boundTop =  boundHeight >= minTitleHeight ? marginTop + titleSize : marginTop
+    let boundTop =
+      boundHeight >= minTitleHeight ? marginTop + titleSize : marginTop
 
     if (boundHeight >= minTitleHeight) {
       boundHeight -= titleSize
     }
 
-    const xAccessor = d => d[0]
-    const yAccessor = d => d[1]
+    const xAccessor = (d) => d[0]
+    const yAccessor = (d) => d[1]
 
-    const {reducedDimensions, reducedDimensionsClassified} = calcReducedDimensions()
+    const {
+      reducedDimensions,
+      reducedDimensionsClassified,
+    } = calcReducedDimensions()
 
-    return {minTitleHeight, titleSize, boundWidth, boundHeight, boundLeft, boundTop,
-      xAccessor, yAccessor, reducedDimensions, reducedDimensionsClassified}
+    return {
+      minTitleHeight,
+      titleSize,
+      boundWidth,
+      boundHeight,
+      boundLeft,
+      boundTop,
+      xAccessor,
+      yAccessor,
+      reducedDimensions,
+      reducedDimensionsClassified,
+    }
   }
 
   function calcReducedDimensions() {
-    const opt = {dim : 2, epsilon, perplexity}
-    var tsne =  allTSNEE(opt)
-    const tsneData = data.map(row => {
+    const opt = { dim: 2, epsilon, perplexity }
+    var tsne = allTSNEE(opt)
+    const tsneData = data.map((row) => {
       return row.dimensions
     })
 
     tsne.initDataRaw(tsneData)
 
-    for(var k = 0; k < 500; k++) {
-      tsne.step(); // every time you call this, solution gets better
+    for (var k = 0; k < 500; k++) {
+      tsne.step() // every time you call this, solution gets better
     }
 
-    const reducedDimensions = tsne.getSolution(); // Y is an array of 2-D points that you can plot
+    const reducedDimensions = tsne.getSolution() // Y is an array of 2-D points that you can plot
 
     const reducedDimensionsClassified = reducedDimensions.map((e, i) => {
       let classification = undefined
@@ -87,105 +101,116 @@ export function render(node, data, visualOptions, mapping) {
       if (data[i] && data[i].labels) {
         label = data[i].labels
       }
-      return {reducedDimension: e, classification, label}
+      return { reducedDimension: e, classification, label }
     })
 
-    return {reducedDimensions, reducedDimensionsClassified}
+    return { reducedDimensions, reducedDimensionsClassified }
   }
 
   function createBounds() {
-    svg.append('rect')
-        .attr('width', width)
-        .attr('height', height)
-        .attr('fill', background)
+    svg
+      .append('rect')
+      .attr('width', width)
+      .attr('height', height)
+      .attr('fill', background)
 
     if (titleSize) {
-      svg.append('text')
-          .text(title)
-          .attr('x', width / 2)
-          .attr('y', marginTop)
-          .style("text-anchor", "middle")
-          .attr("font-size", titleSize)
+      svg
+        .append('text')
+        .text(title)
+        .attr('x', width / 2)
+        .attr('y', marginTop)
+        .style('text-anchor', 'middle')
+        .attr('font-size', titleSize)
     }
 
-    return svg.append("g")
-        .attr("transform", `translate(
+    return svg.append('g').attr(
+      'transform',
+      `translate(
       ${boundLeft},
-      ${boundTop})`)
+      ${boundTop})`
+    )
   }
 
   function createScales() {
     const xScale = d3
-        .scaleLinear()
-        .domain(d3.extent(xDimension))
-        .range([0, boundWidth])
-        .nice()
+      .scaleLinear()
+      .domain(d3.extent(xDimension))
+      .range([0, boundWidth])
+      .nice()
 
     const yScale = d3
-        .scaleLinear()
-        .domain(d3.extent(yDimension))
-        .range([boundHeight, 0])
-        .nice()
+      .scaleLinear()
+      .domain(d3.extent(yDimension))
+      .range([boundHeight, 0])
+      .nice()
 
-    return {xScale, yScale}
+    return { xScale, yScale }
   }
 
   function createAxes() {
-    const yAxisGenerator = d3.axisLeft()
-        .scale(yScale)
-        .tickFormat(d3.format(".1e"))
-    const yAxis = bounds.append("g")
-        .call(yAxisGenerator)
-        .attr("text-anchor", "left")
-    yAxis.attr("transform", `translate(${0}, 0)`)
+    const yAxisGenerator = d3
+      .axisLeft()
+      .scale(yScale)
+      .tickFormat(d3.format('.1e'))
+    const yAxis = bounds
+      .append('g')
+      .call(yAxisGenerator)
+      .attr('text-anchor', 'left')
+    yAxis.attr('transform', `translate(${0}, 0)`)
 
-    yAxis.selectAll("text")
-        .attr("transform", `translate(${0}, 0)`)
-        .style("text-anchor", "end")
+    yAxis
+      .selectAll('text')
+      .attr('transform', `translate(${0}, 0)`)
+      .style('text-anchor', 'end')
 
-    const xAxisGenerator = d3.axisBottom()
-        .scale(xScale)
-        .tickFormat(d3.format(".1e"))
-    const xAxis = bounds.append("g")
-        .call(xAxisGenerator)
-        .attr("transform",
-            `translate(${0}, ${boundHeight})`)
+    const xAxisGenerator = d3
+      .axisBottom()
+      .scale(xScale)
+      .tickFormat(d3.format('.1e'))
+    const xAxis = bounds
+      .append('g')
+      .call(xAxisGenerator)
+      .attr('transform', `translate(${0}, ${boundHeight})`)
 
     if (!tickLabelsVisible) {
-      yAxis.selectAll("text").remove()
-      xAxis.selectAll("text").remove()
+      yAxis.selectAll('text').remove()
+      xAxis.selectAll('text').remove()
     }
 
-    return({xAxis, yAxis})
+    return { xAxis, yAxis }
   }
 
   function drawScatterPoints() {
-    const dots = bounds.selectAll("circle").data(reducedDimensionsClassified)
+    const dots = bounds.selectAll('circle').data(reducedDimensionsClassified)
 
     function mouseOver(e, d) {
       const x = e.target.cx.animVal.value
       const y = e.target.cy.animVal.value - 20
-      bounds.append("text")
-          .attr("x", x)
-          .attr("y", y)
-          .attr("font-size", 30)
-          .attr("class", "similarity-map-point-label")
-          .text(d.label);
+      bounds
+        .append('text')
+        .attr('x', x)
+        .attr('y', y)
+        .attr('font-size', 30)
+        .attr('class', 'similarity-map-point-label')
+        .text(d.label)
       console.log(d.label)
     }
 
     function mouseOut(e, d) {
-    bounds.select(".similarity-map-point-label")
-        .remove()
+      bounds.select('.similarity-map-point-label').remove()
     }
 
-    dots.join("circle")
-        .attr("cx", d => xScale(xAccessor(d.reducedDimension)))
-        .attr("cy", d => yScale(yAccessor(d.reducedDimension)))
-        .attr("r", dotsRadius)
-        .attr("fill", (d) => d.classification ? colorScale(d.classification) : "#0365a8")
-        .on('mouseover', mouseOver)
-        .on('mouseout', mouseOut)
+    dots
+      .join('circle')
+      .attr('cx', (d) => xScale(xAccessor(d.reducedDimension)))
+      .attr('cy', (d) => yScale(yAccessor(d.reducedDimension)))
+      .attr('r', dotsRadius)
+      .attr('fill', (d) =>
+        d.classification ? colorScale(d.classification) : '#0365a8'
+      )
+      .on('mouseover', mouseOver)
+      .on('mouseout', mouseOut)
     return dots
   }
 }

@@ -7,7 +7,8 @@ export const metadata = {
   thumbnail,
   icon,
   categories: ['Correlations', 'Comparison'],
-  description: 'A bar chart with which compares two categories of one entity depending on a second variable.',
+  description:
+    'A bar chart with which compares two categories of one entity depending on a second variable.',
   code: 'https://github.com/rawgraphs',
   tutorial: 'https://rawgraphs.io/learning/',
 }

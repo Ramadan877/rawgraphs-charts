@@ -3,9 +3,7 @@ Copied and customized from:
 https://github.com/rawgraphs/rawgraphs-charts/tree/master/src/arcdiagram/visualOptions.js
 */
 
-
 export const visualOptions = {
-
   marginTop: {
     type: 'number',
     label: 'Margin (top)',
@@ -87,7 +85,6 @@ export const visualOptions = {
     group: 'colors',
   },
 
-
   /*
   Copied and customized from linechart:
   https://github.com/rawgraphs/rawgraphs-charts/tree/master/src/linechart
@@ -121,5 +118,4 @@ export const visualOptions = {
     ],
     default: 'sans-serif',
   },
-
 }

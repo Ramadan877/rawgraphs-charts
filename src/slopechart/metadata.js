@@ -9,6 +9,7 @@ export const metadata = {
   categories: ['correlations'],
   description:
     'It allows the comparison of two continuous dimensions showing them as axes, and using a line to show the relationship.',
-  code: 'https://github.com/rawgraphs/rawgraphs-charts/tree/master/src/slopechart',
+  code:
+    'https://github.com/rawgraphs/rawgraphs-charts/tree/master/src/slopechart',
   tutorial: 'https://rawgraphs.io/learning/how-to-make-a-slope-graph/',
 }
